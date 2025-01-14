@@ -1,9 +1,9 @@
-from config import read_config
+from config import readConfig
 import os
-from audio_preprocessing import count, record
+from audio_preprocessing import filenameList, record
 import time
 
-config = read_config()
+config = readConfig()
 no_wakeword_dataset_address = config.get('address', 'no_wakeword_dataset_address')
 no_wakeword_dataset_address = os.path.join(os.path.dirname(os.path.abspath(__file__)), no_wakeword_dataset_address)
 record_no_wakeword_time = config.get('record_time', 'record_no_wakeword_time')
@@ -13,8 +13,8 @@ record_no_wakeword_time = int(record_no_wakeword_time)
 samplerate = int(samplerate)
 channels = int(channels)
 
-no_wakeword_dataset_count = count(no_wakeword_dataset_address)
-print(f'当前no_wakeword_count音频数据集的数量有{no_wakeword_dataset_count}条。')
+filename_list = filenameList(no_wakeword_dataset_address)
+print(f'当前no_wakeword_count音频数据集的数量有{len(filename_list)}条。')
 
 record_count = int(input('请输入要录制的音频数量：'))
 for i in range(record_count):

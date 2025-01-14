@@ -1,13 +1,14 @@
 import os
 import sounddevice
 import scipy
+from pydub import AudioSegment
 
 
 # 统计音频数据集的数量
-def count(dataset_address):
+def filenameList(dataset_address):
     os.makedirs(name=dataset_address, exist_ok=True)
-    count = len(os.listdir(dataset_address))
-    return count
+    filename = os.listdir(dataset_address)
+    return filename
 
 # makedirs(name, mode=0o777, exist_ok=False)递归地创建目录
 # name(str)要创建的目录路径，如果路径中有多个目录层级，会递归地创建所有不存在的目录
@@ -42,3 +43,9 @@ def record(record_wakeword_time, samplerate, channels, filename):
 # filename(str/open file handle)输出的WAV文件名或已打开的文件句柄
 # rate(int)采样率，以样本/秒为单位
 # data(ndarray)一维或二维NumPy数组，可是整数或浮点数据类型
+
+def overlop(background_audio_address, feature_audio_address, label_audio_address):
+    background_audio = AudioSegment.from_file(background_audio_address)
+    feature_audio = AudioSegment.from_file(feature_audio_address)
+    overlop_audio = background_audio.overlay(feature_audio)
+    overlop_audio.export(label_audio_address)
