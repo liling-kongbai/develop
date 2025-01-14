@@ -4,7 +4,7 @@ import scipy
 from pydub import AudioSegment
 
 
-# 统计音频数据集的数量
+# 记录音频数据集文件的名称
 def filenameList(dataset_address):
     os.makedirs(name=dataset_address, exist_ok=True)
     filename = os.listdir(dataset_address)
