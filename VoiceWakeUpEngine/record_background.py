@@ -1,9 +1,9 @@
-from config import read_config
+from config import readConfig
 import os
-from audio_preprocessing import count, record
+from audio_preprocessing import filenameList, record
 import time
 
-config = read_config()
+config = readConfig()
 background_dataset_address = config.get('address', 'background_dataset_address')
 background_dataset_address = os.path.join(os.path.dirname(os.path.abspath(__file__)), background_dataset_address)
 record_background_time = config.get('record_time', 'record_background_time')
@@ -13,8 +13,8 @@ record_background_time = int(record_background_time)
 samplerate = int(samplerate)
 channels = int(channels)
 
-background_dataset_count = count(background_dataset_address)
-print(f'当前background音频数据集的数量有{background_dataset_count}条。')
+filename_list = filenameList(background_dataset_address)
+print(f'当前background音频数据集的数量有{filename_list}条。')
 
 record_count = int(input('请输入要录制的音频数量：'))
 for i in range(record_count):

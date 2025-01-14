@@ -1,30 +1,28 @@
-from config import read_config
-import os
-from audio_preprocessing import count, record
-import time
+from config import readConfig
+from audio_preprocessing import filenameList, overlop
 
-config = read_config()
+
+config = readConfig()
+
+
+address_choice = int(input('请输入要合成音频的数据集（1，训练集；2，测试集）：'))
+if address_choice == 1:
+    dataset_address = config.get('address', 'train_dataset_address')
+elif address_choice == 2:
+    dataset_address = config.get('address', 'test_dataset_address')
+
+
+overlop_count = int(input('请输入要合成的音频数量：'))
+
+
+background_dataset_address = config.get('address', 'background_dataset_address')
 wakeword_dataset_address = config.get('address', 'wakeword_dataset_address')
-wakeword_dataset_address = os.path.join(os.path.dirname(os.path.abspath(__file__)), wakeword_dataset_address)
-record_wakeword_time = config.get('record_time', 'record_wakeword_time')
-samplerate = config.get('audio', 'samplerate')
-channels = config.get('audio', 'channels')
+no_wakeword_dataset_address = config.get('address', 'no_wakeword_dataset_address')
 
-print(samplerate)
-print(record_wakeword_time)
 
-print(type(samplerate))
-print(type(record_wakeword_time))
+wakeword_filename_list = filenameList(wakeword_dataset_address)
+no_wakeword_filename_list = filenameList(no_wakeword_dataset_address)
 
-s = int(samplerate)
-print(s)
-print(type(s))
-
-r = int(record_wakeword_time)
-print(r)
-print(type(r))
-
-# chengji = samplerate * record_wakeword_time
-cj = s * r
-# print(chengji)
-print(cj)
+for i in range(overlop_count):
+    label_audio_address = 'C:\\Users\\kongbai\\study\\develop\\VoiceWakeUpEngine\\dataset\\test\\hahha.wav'
+    overlop(background_audio_address, feature_audio_address, label_audio_address)
