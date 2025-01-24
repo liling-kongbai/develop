@@ -5,9 +5,9 @@ from pydub import AudioSegment
 
 
 # 记录音频数据集文件的名称
-def filenameList(dataset_address):
-    os.makedirs(name=dataset_address, exist_ok=True)
-    filename = os.listdir(dataset_address)
+def filenameList(dataset_path):
+    os.makedirs(name=dataset_path, exist_ok=True)
+    filename = os.listdir(dataset_path)
     return filename
 
 # makedirs(name, mode=0o777, exist_ok=False)递归地创建目录
@@ -44,8 +44,8 @@ def record(record_wakeword_time, samplerate, channels, filename):
 # rate(int)采样率，以样本/秒为单位
 # data(ndarray)一维或二维NumPy数组，可是整数或浮点数据类型
 
-def overlop(background_audio_address, feature_audio_address, label_audio_address):
-    background_audio = AudioSegment.from_file(background_audio_address)
-    feature_audio = AudioSegment.from_file(feature_audio_address)
+def overlop(background_audio_path, feature_audio_path, label_audio_path):
+    background_audio = AudioSegment.from_file(background_audio_path)
+    feature_audio = AudioSegment.from_file(feature_audio_path)
     overlop_audio = background_audio.overlay(feature_audio)
-    overlop_audio.export(label_audio_address)
+    overlop_audio.export(label_audio_path)
