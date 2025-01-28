@@ -1,7 +1,7 @@
 from config import readConfig
 import os
 from audio_preprocessing import filenameList, record
-import time
+import datetime
 
 config = readConfig()
 background_dataset_path = config.get('path', 'background_dataset_path')
@@ -14,11 +14,12 @@ samplerate = int(samplerate)
 channels = int(channels)
 
 filename_list = filenameList(background_dataset_path)
-print(f'当前background音频数据集的数量有{filename_list}条。')
+print(f'当前background音频数据集的数量有{len(filename_list)}条。')
 
 record_count = int(input('请输入要录制的音频数量：'))
+
 for i in range(record_count):
     input(f'现在录制第{i + 1}条，请回车开始！')
-    record(record_background_time, samplerate, channels, os.path.join(background_dataset_path, str(int(time.time())) + '.wav'))
+    record(record_background_time, samplerate, channels, os.path.join(background_dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.wav'))
     if i + 1  == record_count:
         print('录制结束。')

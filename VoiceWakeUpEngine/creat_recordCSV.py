@@ -35,7 +35,7 @@ def creat_train_csv():
     labels_list = []
     
     for file_name in feature_list:
-        base_name = file_name.split(".")[0]
+        base_name = file_name.split('_')[0]
 
         if base_name:
             features_list.append(base_name)
@@ -66,7 +66,7 @@ def creat_test_csv():
     labels_list = []
     
     for file_name in feature_list:
-        base_name = file_name.split(".")[0]
+        base_name = file_name.split('_')[0]
         if base_name:
             features_list.append(base_name)
         else:

@@ -1,5 +1,6 @@
 import os
 import csv
+import torchaudio
 
 
 
@@ -19,13 +20,6 @@ def readCSV(path):
     print(data)
     return data
 
-readCSV('train_dataset_feature_csv.csv')
-readCSV('train_dataset_label_csv.csv')
-
-
-
-
-
 
 
 
@@ -33,9 +27,15 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 class audio_Dataset(Dataset):
-    def __init__(self, data, labels, transform=None):
+    def __init__(self, data, labels, train, transform=None):
         # 初始化数据集，可能包括数据预处理
-        self.data = data
+        
+        
+        if train:
+            self.data = [os.path.join(project_path, 'develop\\train', i, '_', j + '.wav') for i, j in zip(data, labels)]
+        else:
+            self.data = [os.path.join(project_path, 'develop\\test', i, '_', j + '.wav') for i, j in zip(data, labels)]
+
         self.labels = labels
         self.transform = transform
 
@@ -46,21 +46,59 @@ class audio_Dataset(Dataset):
         sample_data = self.data[idx]
         sample_label = self.labels[idx]
 
+
+
+
+
+
+
+
+
+        
+        waveform, _ = torchaudio.load(sample_data)
+        vie = torchaudio.transforms.Spectrogram()
+
+
+# 在返回之前要不要正则化，要不要把预处理放在这里？？？！！！
+
+
+
+
+
+
+
+
+
+
+
         if self.transform:
             sample_data = self.transform(sample_data)
 
         # 返回时通常要将数据转换为张量类型
-        return torch.tensor(sample_data, dtype=torch.float32), torch.tensor(sample_label, dtype=torch.long)
+        return torch.tensor(sample_data, dtype=torch.int64), torch.tensor(sample_label, dtype=torch.uint8)
+
+
+
+
+
+
 
 
 
 # 创建数据集实例
-dataset = audio_Dataset(readCSV('train_dataset_feature_csv.csv'), readCSV('train_dataset_label_csv.csv'))
+dataset = audio_Dataset(list(map(int, readCSV('train_dataset_feature_csv.csv'))), list(map(int, readCSV('train_dataset_label_csv.csv'))))
 
 # 使用 DataLoader 加载数据集
-dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
 
-# 遍历 DataLoader
-for batch in dataloader:
-    batch_data, batch_labels = batch
-    print(f"Batch data: {batch_data}\nBatch labels: {batch_labels}")
+
+
+
+
+
+
+
+
+
+
+# 更改自定义数据集，如果可以应该集成预处理步骤
