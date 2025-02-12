@@ -106,13 +106,14 @@ train_dataset = audio_Dataset(readCSV('train_dataset_feature_csv.csv'), readCSV(
                               train=True,
                               transform=combined_transform)
 test_dataset = audio_Dataset(readCSV('test_dataset_feature_csv.csv'), readCSV('test_dataset_label_csv.csv'),
-                             train=True,
+                             train=False,
                              transform=combined_transform)
 
 
 
 train_dataloader = DataLoader(train_dataset, batch_size=2, shuffle=True)
 test_dataloader = DataLoader(test_dataset, batch_size=2, shuffle=True)
+
 
 
 for batch_idx, (data, label) in enumerate(train_dataloader):
@@ -123,15 +124,14 @@ for batch_idx, (data, label) in enumerate(train_dataloader):
 
 
 
-
 class DFCNN(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1)
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(256 * 130 * 215, 512)
+        self.fc1 = nn.Linear(64 * 64 * 107, 512)
         self.fc2 = nn.Linear(512, num_classes)
         self.dropout = nn.Dropout(p=0.5)
 
@@ -140,36 +140,45 @@ class DFCNN(nn.Module):
         x = self.pool(F.relu(self.conv2(x)))
         x = self.pool(F.relu(self.conv3(x)))
         x = x.view(x.size(0), -1)
-        x = F.relu(self.fc(x))
+        x = F.relu(self.fc1(x))
         x = self.dropout(x)
         x = self.fc2(x)
         return x
 
-network = DFCNN(num_classes=2).to(device)
 
+
+print('网络部分开始')
+network = DFCNN(num_classes=2).to(device)
+print('损失函数部分开始')
 Loss = nn.CrossEntropyLoss()
- 
-lr = 0.05
+print('优化器部分开始')
+lr = 0.005
 optimizer = torch.optim.Adam(network.parameters(), lr)
 
+
+
+print('训练部分开始')
+network.load_state_dict(torch.load(os.path.join(project_path, 'model_state_dict.pth')))
 network.train()
 num_epochs = 2
 for epoch in range(num_epochs):
     i = 1
-    for features, label in train_dataloader:
+    for features, labels in train_dataloader:
         features, labels = features.to(device), labels.to(device)
         optimizer.zero_grad()
         output = network(features)
-        loss = Loss(output, label)
+        loss = Loss(output, labels)
         loss.backward()
         optimizer.step()
         i += 1
         if i % 2 == 0:
             print(f'第{epoch + 1}轮，第{i}个损失：{loss}')
     print(f'第{epoch + 1}轮最后一次损失：{loss}')
+torch.save(network.state_dict(), os.path.join(project_path, 'model_state_dict.pth'))
 
 
 
+print('测试部分开始')
 network.eval()
 correct = 0
 total = 0
