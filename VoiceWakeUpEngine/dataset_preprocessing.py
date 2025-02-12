@@ -41,8 +41,8 @@ for i in range(overlop_count):
     if probability > 0.5:
         feature_audio_filename = random.choices(wakeword_filename_list)[0]
         feature_audio_path = os.path.join(project_path, wakeword_dataset_path, feature_audio_filename)
-        overlop(background_audio_path, feature_audio_path, os.path.join(project_path, dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_1' + '.wav'))
+        overlop(background_audio_path, feature_audio_path, os.path.join(project_path, dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S%f") + '_1' + '.wav'))
     else:
         feature_audio_filename = random.choices(no_wakeword_filename_list)[0]
         feature_audio_path = os.path.join(project_path, no_wakeword_dataset_path, feature_audio_filename)
-        overlop(background_audio_path, feature_audio_path, os.path.join(project_path, dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_0' + '.wav'))
+        overlop(background_audio_path, feature_audio_path, os.path.join(project_path, dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S%f") + '_0' + '.wav'))

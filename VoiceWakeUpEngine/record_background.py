@@ -20,6 +20,6 @@ record_count = int(input('请输入要录制的音频数量：'))
 
 for i in range(record_count):
     input(f'现在录制第{i + 1}条，请回车开始！')
-    record(record_background_time, samplerate, channels, os.path.join(background_dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.wav'))
+    record(record_background_time, samplerate, channels, os.path.join(background_dataset_path, datetime.datetime.now().strftime("%Y%m%d%H%M%S%f") + '.wav'))
     if i + 1  == record_count:
         print('录制结束。')
