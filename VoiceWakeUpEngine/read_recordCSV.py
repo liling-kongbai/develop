@@ -158,7 +158,14 @@ optimizer = torch.optim.Adam(network.parameters(), lr)
 
 
 print('训练部分开始')
-network.load_state_dict(torch.load(os.path.join(project_path, 'model_state_dict.pth')))
+
+
+model_path = os.path.join(project_path, 'model', 'model_state_dict.pth')
+
+
+if os.path.exists(model_path):
+    network.load_state_dict(torch.load(model_path))
+
 network.train()
 num_epochs = 2
 for epoch in range(num_epochs):
@@ -174,7 +181,7 @@ for epoch in range(num_epochs):
         if i % 2 == 0:
             print(f'第{epoch + 1}轮，第{i}个损失：{loss}')
     print(f'第{epoch + 1}轮最后一次损失：{loss}')
-torch.save(network.state_dict(), os.path.join(project_path, 'model_state_dict.pth'))
+torch.save(network.state_dict(), os.path.join(project_path, 'model', 'model_state_dict.pth'))
 
 
 
